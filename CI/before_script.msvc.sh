@@ -342,6 +342,19 @@ if [ -z $VS_VERSION ]; then
 fi
 
 case $VS_VERSION in
+    17|17.0|2022 )
+		GENERATOR="Visual Studio 17 2022"
+		TOOLSET="vc142"
+		MSVC_REAL_VER="16"
+		MSVC_VER="14.2"
+		MSVC_YEAR="2015"
+		MSVC_REAL_YEAR="2019"
+		MSVC_DISPLAY_YEAR="2019"
+		BOOST_VER="1.71.0"
+		BOOST_VER_URL="1_71_0"
+		BOOST_VER_SDK="107100"		
+        ;;
+
 	16|16.0|2019 )
 		GENERATOR="Visual Studio 16 2019"
 		TOOLSET="vc142"
@@ -619,6 +632,38 @@ echo "Extracting dependencies, this might take a while..."
 echo "---------------------------------------------------"
 echo
 
+# CrabNet
+printf "RakNet... "
+{
+    cd $DEPS_INSTALL
+    if [ -d RakNet ]; then
+        printf "Exists. "
+    elif [ -z $SKIP_EXTRACT ]; then
+        # Assuming you've built RakNet and want to move it to the deps directory
+        RAKNET_BUILD_DIR="${DEPS}/CrabNet/build"  # Adjust this path
+        mkdir -p RakNet/lib
+        mkdir -p RakNet/include/raknet
+        
+        # Copy the built library
+        cp "${RAKNET_BUILD_DIR}/lib/Release/RakNetLibStatic.lib" RakNet/lib/
+        # Copy the debug library if you built it
+        [ -f "${RAKNET_BUILD_DIR}/lib/Debug/RakNetLibStaticd.lib" ] && \
+            cp "${RAKNET_BUILD_DIR}/lib/Debug/RakNetLibStaticd.lib" RakNet/lib/
+        
+        # Copy header files
+        cp -r "${DEPS}/CrabNet/include/raknet"/* RakNet/include/raknet/
+    fi
+    
+    RAKNET_SDK="$(real_pwd)/RakNet"
+    add_cmake_opts -DRAKNET_ROOT="$RAKNET_SDK" \
+                   -DRakNet_LIBRARY_DEBUG="$RAKNET_SDK/lib/RakNetLibStaticd.lib" \
+                   -DRakNet_LIBRARY_RELEASE="$RAKNET_SDK/lib/RakNetLibStatic.lib" \
+                   -DRakNet_INCLUDES="$RAKNET_SDK/include"
+    
+    echo Done.
+}
+cd $DEPS
+echo
 
 # Boost
 if [ -z $APPVEYOR ]; then
