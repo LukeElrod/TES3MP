@@ -391,6 +391,7 @@ case $VS_VERSION in
 		wrappedExit 1
 		;;
 esac
+add_cmake_opts "-T v142"
 
 case $PLATFORM in
 	x64|x86_64|x86-64|win64|Win64 )
