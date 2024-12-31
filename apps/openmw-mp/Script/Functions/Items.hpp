@@ -39,6 +39,7 @@
     {"SendEquipment",                         ItemFunctions::SendEquipment},\
     {"SendInventoryChanges",                  ItemFunctions::SendInventoryChanges},\
     {"SendItemUse",                           ItemFunctions::SendItemUse},\
+    {"SetUsedItem",                           ItemFunctions::SetUsedItem},\
     \
     {"InitializeInventoryChanges",            ItemFunctions::InitializeInventoryChanges},\
     {"AddItem",                               ItemFunctions::AddItem}
@@ -311,6 +312,8 @@ public:
     * \return void
     */
     static void SendItemUse(unsigned short pid) noexcept;
+
+    static bool SetUsedItem(unsigned short pid, const char* refid) noexcept;
 
     // All methods below are deprecated versions of methods from above
 
